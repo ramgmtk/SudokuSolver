@@ -2,20 +2,18 @@
 #include <fstream>
 #include <sstream>
 #include <string>
-
-void parseData(const std::string& data) {
-    //std::stringstream ss;
-    std::cout << data << std::endl;
-}
+#include "board.h"
 
 int main(int argc, char** argv) {
     std::ifstream infile;
-    std::string data;
+    std::string data, numbers;
     if (argc < 2) throw std::invalid_argument("./main <input file>\n");
     infile.open(argv[1]);
     while(std::getline(infile, data)) {
-        parseData(data);
+        numbers += data;
     }
+    board b(numbers);
+    b.print();
     
     return 0;
 }
