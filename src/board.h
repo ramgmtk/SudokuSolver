@@ -9,4 +9,5 @@ class board {
         board(const std::string& numbers);
         ~board();
         void print();
+        bool valid();
 };
