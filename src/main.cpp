@@ -3,6 +3,7 @@
 #include <sstream>
 #include <string>
 #include "board.h"
+#include "structure.h"
 
 int main(int argc, char** argv) {
     std::ifstream infile;
