@@ -16,9 +16,10 @@ class linked_list {
         linked_list() : size(0), head(nullptr) {}
         ~linked_list();
         void insert_head(T data);
-        void delete_head();
+        T delete_head();
         unsigned int length(); 
         bool is_empty();
+        void print();
 };
 
 template <class T>
@@ -37,13 +38,16 @@ void linked_list<T>::insert_head(T data) {
 }
 
 template <class T>
-void linked_list<T>::delete_head()  {
+T linked_list<T>::delete_head()  {
+    T value;
     if (this->head) {
         node* test = this->head;
+        value = test->data;
         this->head = this->head->next;
         delete test;
         this->size--;
     }
+    return value;
 }
 
 template <class T>
@@ -54,6 +58,15 @@ unsigned int linked_list<T>::length() {
 template <class T>
 bool linked_list<T>::is_empty() {
     return head;
+}
+
+template <class T>
+void linked_list<T>::print() {
+    node* traverse = this->head;
+    while (traverse) {
+        std::cout << traverse->data << std::endl;
+        traverse = traverse->next;
+    }
 }
 
 #endif
