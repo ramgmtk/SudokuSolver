@@ -1,5 +1,6 @@
 #include <string>
 #include <iostream>
+#include <math.h>
 
 #include "board.h"
 
@@ -8,9 +9,12 @@
 //Dynamically allocate the stack structure.
 board::board(const std::string& numbers) {
     this->initial_num = 0;
-    this->size = 9;
-    if (numbers.length() != this->size * this->size) 
-        throw std::invalid_argument("Input file character total != 81\n");
+    long long perfectSquare = std::sqrt(numbers.length());
+    if (numbers.length() != perfectSquare * perfectSquare) 
+        throw std::invalid_argument("Input file character total is not a perfect square\n");
+    else
+        this->size = perfectSquare;
+    this->box_size = std::sqrt(this->size);
 
     //setup array
     this->arr = new int*[this->size];
@@ -40,7 +44,7 @@ board::board(const std::string& numbers) {
         for (int j = 0; j < this->size; j++) {
             int value = this->arr[i][j];
             if (value == 0) continue;
-            int box = (i/3)*3 + j/3;
+            int box = this->get_box(i, j);
             if (col_arr[j][value-1] || row_arr[i][value-1] || box_arr[box][value-1]) {
                 throw "Constructing an invalid board.";
             } else {
@@ -91,8 +95,8 @@ void board::print() {
 //Checks if the board is meets the condition for a sudoku solution.
 //called multiple times from the solver function.
 bool board::valid(number entry) {
-    if (this->col_arr[entry.col][entry.value-1] || this->row_arr[entry.row][entry.value-1] || this->box_arr[entry.box][entry.value-1])
-        return false;
+    if (this->col_arr[entry.col][entry.value-1] || this->row_arr[entry.row][entry.value-1] || 
+        this->box_arr[entry.box][entry.value-1]) return false;
     else return true;
 }
 
@@ -112,6 +116,10 @@ void board::remove_num(number removal) {
     this->box_arr[removal.box][removal.value - 1] = 0;
 }
 
+int board::get_box(int i, int j) {
+    return (i / this->box_size) * this->box_size + j / this->box_size;
+}
+
 //Main function which will attempts to fill out the board.
 void board::solver() {
     bool success = true;
@@ -123,9 +131,10 @@ void board::solver() {
         for (; i < this->size; i++) {
             success = false;
             for (; j < this->size; j++) {
+                if (this->arr[i][j] != 0) continue; //if this spot is already occupied.
                 for (; n < this->size+1; n++) {
                     try {
-                        number num(k, i, j, ((i/3)*3 + j/3), n);
+                        number num(k, i, j, this->get_box(i, j), n);
                         this->insert_num(num);
                         stack->insert_head(num);
                         success = true;
@@ -141,13 +150,16 @@ void board::solver() {
             if (success) break;
         }
         if (!success) {
-            if (stack->is_empty()) throw std::domain_error("No solution exists.\n");
+            if (stack->is_empty()) {
+                this->print();
+                throw std::domain_error("No solution exists.\n");
+            }
             number r_num = stack->delete_head();
             k = r_num.num - 1;
             i = r_num.row;
             j = r_num.col;
             n = r_num.value + 1;
             this->remove_num(r_num);
-        } else i = 1; //is this necessary?
+        } else i = 0; //is this necessary?
     }
 }

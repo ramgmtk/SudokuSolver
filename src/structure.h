@@ -52,12 +52,12 @@ T linked_list<T>::delete_head()  {
 
 template <class T>
 unsigned int linked_list<T>::length() {
-    return size;
+    return this->size;
 }
 
 template <class T>
 bool linked_list<T>::is_empty() {
-    return head;
+    return this->head ? false : true;
 }
 
 template <class T>

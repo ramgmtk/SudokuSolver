@@ -13,6 +13,7 @@ class board {
         int **box_arr;
         int initial_num;
         unsigned int size;
+        unsigned int box_size;
         struct number {
             unsigned int num;
             unsigned int row;
@@ -27,8 +28,9 @@ class board {
         bool valid(number entry);
         void insert_num(number entry);
         void remove_num(number entry);
+        int get_box(int i, int j);
     public:
-        board() : size(9), initial_num(0), stack(nullptr) {}
+        board() : size(9), box_size(0), initial_num(0), stack(nullptr) {}
         board(const std::string& numbers);
         ~board();
         void print();

@@ -16,11 +16,16 @@ int main(int argc, char** argv) {
     try {
         board b(numbers);
         b.print();
+        b.solver();
+        b.print();
     } catch(const std::invalid_argument& msg) {
         std::cout << msg.what() << std::endl;
+    } catch (const std::domain_error& msg) {
+        std::cout<< msg.what() << std::endl;
     } catch(const char* msg) {
         std::cout << msg << std::endl;
     }
+
 
     return 0;
 }
